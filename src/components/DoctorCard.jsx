@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'; // 1. ОБОВ'ЯЗКОВО імпортуємо Link для навігації
 
 function DoctorCard({ doctor }) {
-  // Завдання: Ініціалізуємо стан значенням з LocalStorage, якщо воно там є, інакше 0
+  // Ініціалізуємо стан значенням з LocalStorage, якщо воно там є, інакше 0
   const [appointments, setAppointments] = useState(() => {
     const saved = localStorage.getItem(`doctor_appointments_${doctor.id}`);
     return saved ? parseInt(saved, 10) : 0;
   });
 
-  // Завдання: useEffect для збереження кількості талонів у LocalStorage при кожній зміні стану
+  // useEffect для збереження кількості талонів у LocalStorage при кожній зміні стану
   useEffect(() => {
     localStorage.setItem(`doctor_appointments_${doctor.id}`, appointments);
   }, [appointments, doctor.id]);
@@ -25,9 +26,20 @@ function DoctorCard({ doctor }) {
       alignItems: 'center'
     }}>
       <div>
-        <h3 style={{ margin: '0 0 10px 0', color: '#0056b3' }}>{doctor.name}</h3>
+        {/* 2. ЗМІНЕНО: тепер ім'я лікаря є клікабельним посиланням на динамічний маршрут */}
+        <h3 style={{ margin: '0 0 10px 0' }}>
+          <Link to={`/doctor/${doctor.id}`} style={{ color: '#0056b3', textDecoration: 'none', fontOverride: 'bold' }}>
+            {doctor.name}
+          </Link>
+        </h3>
+        
         <p style={{ margin: '5px 0' }}><strong>Спеціалізація:</strong> {doctor.spec}</p>
         <p style={{ margin: '5px 0', color: '#28a745', fontWeight: 'bold' }}>Вартість прийому: {doctor.price} грн</p>
+        
+        {/* 3. ДОДАНО: текстове посилання під деталі */}
+        <Link to={`/doctor/${doctor.id}`} style={{ fontSize: '14px', color: '#666', textDecoration: 'underline' }}>
+          Переглянути деталі та графік
+        </Link>
       </div>
 
       <div style={{ textAlign: 'center', minWidth: '160px' }}>
