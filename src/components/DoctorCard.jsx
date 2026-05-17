@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-// Компонент приймає дані про лікаря через props
 function DoctorCard({ doctor }) {
-  // Хук useState для лічильника кількості обраних талонів
-  const [appointments, setAppointments] = useState(0);
+  // Завдання: Ініціалізуємо стан значенням з LocalStorage, якщо воно там є, інакше 0
+  const [appointments, setAppointments] = useState(() => {
+    const saved = localStorage.getItem(`doctor_appointments_${doctor.id}`);
+    return saved ? parseInt(saved, 10) : 0;
+  });
+
+  // Завдання: useEffect для збереження кількості талонів у LocalStorage при кожній зміні стану
+  useEffect(() => {
+    localStorage.setItem(`doctor_appointments_${doctor.id}`, appointments);
+  }, [appointments, doctor.id]);
 
   return (
     <div style={{
@@ -24,7 +31,6 @@ function DoctorCard({ doctor }) {
       </div>
 
       <div style={{ textAlign: 'center', minWidth: '160px' }}>
-        {/* Кнопка "Купити" (у нас - Записатись), яка змінює стан (State) */}
         <button 
           onClick={() => setAppointments(appointments + 1)}
           style={{
@@ -40,7 +46,6 @@ function DoctorCard({ doctor }) {
           Записатись
         </button>
         
-        {/* Виведення лічильника кількості примірників */}
         <p style={{ marginTop: '10px', fontSize: '14px', color: '#555', margin: '10px 0 0 0' }}>
           Обрано талонів: <strong style={{ color: '#0056b3', fontSize: '16px' }}>{appointments}</strong>
         </p>
